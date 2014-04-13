@@ -1,0 +1,9 @@
+{
+  "name": "Qobuz Client",
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "2.x.x",
+    "flight": "~1.1.0",
+    "requirejs": "~2.1.5"
+  }
+}
