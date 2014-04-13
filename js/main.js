@@ -2,6 +2,11 @@
 
 requirejs.config({
   baseUrl: 'bower_components',
+  shim: {
+    underscore: {
+        exports: '_'
+    }
+  },
   paths: {
     'component': '../js/component',
     'page': '../js/page'
