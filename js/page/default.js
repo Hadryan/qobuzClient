@@ -7,7 +7,7 @@ define(function (require) {
    */
 
   var player = require('component/auroraPlayer');
-
+  var service = require('component/service/qobuz');
   /**
    * Module exports
    */
@@ -20,6 +20,7 @@ define(function (require) {
 
   function initialize() {
       player.attachTo(document);
+      service.attachTo(document);
   }
 
 });

@@ -19,21 +19,18 @@ define(function (require) {
    */
 
   function auroraPlayer() {
+    var player;
     this.defaultAttrs({
 
     });
 
-    this.after('initialize', function () {
-
-
-        var player, onplay;
-        var url = 'http://localhost:8080/reference/test.flac';
+    this.playTrack = function(ev, data){
+        var url = data.url;
         if (player) player.stop();
-
         player = AV.Player.fromURL(url);
-        player.on('error', function(e) { throw e });
-
         player.play();
+
+        player.on('error', function(e) { throw e; });
 
         player.on('buffer', function(percent) {
             console.log("bufferProgress " +  percent);
@@ -49,24 +46,13 @@ define(function (require) {
 
         player.on('metadata', function(data) {
             console.log(data);
-
-            // Show the album art
-//            if (data.coverArt)
-//                document.querySelector("img").src = data.coverArt.toBlobURL();
         });
+    };
+
+    this.after('initialize', function () {
+        this.on(document, 'playTrackFromUrl', this.playTrack);
     });
 
-
-
-//      console.log("on('file', function(file) {
-//          if (file) {
-//              if (player)
-//                  player.disconnect();
-//
-//              player = new DGAuroraPlayer(AV.Player.fromFile(file), DGPlayer);
-//              console.log("off('play', onplay);
-//          }
-//      });
   }
 
 });

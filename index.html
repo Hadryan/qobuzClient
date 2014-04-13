@@ -50,19 +50,17 @@
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
-            <script src="/non_bower_components/aurora.js"></script>
-            <script src="/non_bower_components/flac.js"></script>
 
-            <script>
-                var _sampleRate = (function() {
-                    var AudioContext = (window.AudioContext || window.webkitAudioContext);
-                    if (!AudioContext)
-                        return 44100;
+            <!--<script>-->
+                <!--var _sampleRate = (function() {-->
+                    <!--var AudioContext = (window.AudioContext || window.webkitAudioContext);-->
+                    <!--if (!AudioContext)-->
+                        <!--return 44100;-->
 
-                    return new AudioContext().sampleRate;
-                }());
+                    <!--return new AudioContext().sampleRate;-->
+                <!--}());-->
 
-            </script>
+            <!--</script>-->
 
             <h2 class="content-subhead">Try Resizing your Browser</h2>
             <p>
@@ -73,6 +71,11 @@
 </div>
 
 
+
+<script src="/non_bower_components/aurora.js"></script>
+<script src="/non_bower_components/flac.js"></script>
+
+<script src="/bower_components/oboe/dist/oboe-browser.js"></script>
 
 <!--[if lt IE 9]>
 <script src="/bower_components/es5-shim/es5-shim.js"></script>
