@@ -35,7 +35,7 @@ define(function (require) {
         });
 
         function signRequest(methodName, args) {
-            // Setp 1
+            // Step 1
             var payload = methodName.replace('/','');
 
             // Step 2
@@ -67,8 +67,9 @@ define(function (require) {
             newArgs["request_ts"] = ts;
             newArgs["request_sig"] = md5Payload;
             newArgs["app_id"] = apiParameter.app_id;
-            if (userAuthToken && userAuthToken !== "")
+            if (userAuthToken && userAuthToken !== ""){
                 newArgs["user_auth_token"] = userAuthToken;
+            }
 
             return newArgs;
 
@@ -93,20 +94,35 @@ define(function (require) {
             var url = apiParameter.endPoint + methodName;
 
             return http_build_query(url, args);
-
-//            return Tomahawk.asyncRequest(http_build_query(url, args), callback);
-
         }
 
-        function search(){
+        function getStreamUrl(track_id, callback){
             var params = {
-                query: 'lund quartet',
-                type: "tracks"
+                track_id: track_id,
+                format_id: 6
+            };
+
+            oboe(getApiCallUrl(apiParameter.getFileUrl, params))
+                .done(function(ret){
+                    if (ret.status && ret.status == "error") {
+                        console.log("error");
+                    } else {
+                        callback("/proxy.php?url=" + encodeURIComponent(unescape(ret.url)));
+                    }
+                }).fail(function(err){
+                    console.log(err);
+                });
+        }
+
+        function search(query, type){
+            var params = {
+                query: query,
+                type: type
             };
             getApiCallUrl(apiParameter.search, params);
         }
 
-        function auth(username, password){
+        function auth(username, password, callback){
             var params;
             if (username.indexOf('@') != -1) {
                 params = { // User provided us with a username
@@ -119,8 +135,6 @@ define(function (require) {
                     password: md5(password)
                 };
             }
-
-//            var that = this;
             oboe(getApiCallUrl(apiParameter.userLogin, params))
                 .done(function(ret){
                     if (ret.user_auth_token && ret.user_auth_token !== "" && ret.user_auth_token !== null  ) {
@@ -136,6 +150,7 @@ define(function (require) {
     //                        that.formatId = 6;
     //                        window.localStorage['formatId'] = 6;
                             console.log('Lossless')
+                            callback();
                         }
                     } else {
                         userAuthToken = false;
@@ -154,18 +169,20 @@ define(function (require) {
 
         this.after('initialize', function () {
             var hitch = this;
-            auth('user', 'password');
-//            oboe('http://www.qobuz.com/api.json/0.2/album/get?app_id=100000000&album_id=5060091552784')
-//                .node('tracks.items.*', function(track){
-//                    console.log(track.title);
-//                })
-//                .done(function(things) {
-//                    console.log(things);
-//                    hitch.trigger(document, 'playTrackFromUrl' , {url: 'http://localhost:8080/reference/test.flac'});
-//                })
-//                .fail(function(err) {
-//                    console.log(err);
-//                });
+
+            this.on('login', function(ev, data){
+                auth(data.user, data.password, function(){
+                    hitch.trigger('playTrack', {track_id: '10797286'});
+                });
+            });
+
+
+            this.on('playTrack', function(ev, data){
+                getStreamUrl(data.track_id, function(url){
+                    hitch.trigger('playTrackFromUrl', {url: url});
+//                    hitch.trigger('playTrackFromUrl', {url: 'http://localhost/reference/test.flac'});
+                });
+            });
         });
     }
 

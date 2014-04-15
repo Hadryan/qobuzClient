@@ -23,20 +23,20 @@ Add transition to containers so they can push in and out.
 /*
 This is the parent `<div>` that contains the menu and the content area.
 */
-#layout {
+#layout.withSidebar {
     position: relative;
     padding-left: 0;
 }
-    #layout.active {
+    #layout.withSidebar.active {
         position: relative;
         left: 150px;
     }
-        #layout.active #menu {
+        #layout.withSidebar.active #menu {
             left: 150px;
             width: 150px;
         }
 
-        #layout.active .menu-link {
+        #layout.withSidebar.active .menu-link {
             left: 150px;
         }
 /*
@@ -218,7 +218,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
         padding-right: 2em;
     }
 
-    #layout {
+    #layou.withSidebart {
         padding-left: 150px; /* left col width "#menu" */
         left: 0;
     }
@@ -232,7 +232,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
         display: none;
     }
 
-    #layout.active .menu-link {
+    #layout.withSidebar.active .menu-link {
         left: 150px;
     }
 }
