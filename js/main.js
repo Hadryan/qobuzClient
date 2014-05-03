@@ -27,6 +27,9 @@ require(
     compose.mixin(registry, [advice.withAdvice]);
 
     require(['page/default'], function(initializeDefault) {
+
+
+        DEBUG.events.logNone();
       initializeDefault();
     });
   }

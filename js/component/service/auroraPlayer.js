@@ -20,6 +20,15 @@ define(function (require) {
 
   function auroraPlayer() {
     var player;
+
+//      var _sampleRate = (function() {
+//          var AudioContext = (window.AudioContext || window.webkitAudioContext);
+//          if (!AudioContext)
+//              return 44100;
+//
+//          return new AudioContext().sampleRate;
+//      }());
+
     this.defaultAttrs({
 
     });
@@ -34,6 +43,7 @@ define(function (require) {
 
         player.on('buffer', function(percent) {
             console.log("bufferProgress " +  percent);
+//            window.alert('percent')
         });
 
         player.on('progress',   function(time) {

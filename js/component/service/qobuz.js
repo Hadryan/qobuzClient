@@ -20,6 +20,7 @@ define(function (require) {
 
     function qobuzService() {
         var apiParameter = {
+            limit: 500,
             endPoint: "http://www.qobuz.com/api.json/0.2/",
                 userLogin: "user/login",
                 search: "search/getResults",
@@ -117,53 +118,60 @@ define(function (require) {
         function search(query, type){
             var params = {
                 query: query,
-                type: type
+                type: type,
+                limit: apiParameter.limit
             };
-            getApiCallUrl(apiParameter.search, params);
+            return getApiCallUrl(apiParameter.search, params);
         }
 
-        function auth(username, password, callback){
-            var params;
-            if (username.indexOf('@') != -1) {
-                params = { // User provided us with a username
-                    email: username,
-                    password: md5(password)
-                };
-            } else {
-                params = { // User provided us with an email
-                    username: username,
-                    password: md5(password)
-                };
-            }
-            oboe(getApiCallUrl(apiParameter.userLogin, params))
-                .done(function(ret){
-                    if (ret.user_auth_token && ret.user_auth_token !== "" && ret.user_auth_token !== null  ) {
-                        userAuthToken = ret.user_auth_token;
-    //                    window.localStorage['userAuthToken'] = ret.user_auth_token;
+        function auth(username, password, callback, errCallback){
+            if(window.localStorage['userAuthToken']){
+                userAuthToken = window.localStorage['userAuthToken'];
+                callback();
+            }else{
+                var params;
+                if (username.indexOf('@') != -1) {
+                    params = { // User provided us with a username
+                        email: username,
+                        password: md5(password)
+                    };
+                } else {
+                    params = { // User provided us with an email
+                        username: username,
+                        password: md5(password)
+                    };
+                }
+                oboe(getApiCallUrl(apiParameter.userLogin, params))
+                    .done(function(ret){
+                        if (ret.user_auth_token && ret.user_auth_token !== "" && ret.user_auth_token !== null  ) {
+                            userAuthToken = ret.user_auth_token;
+                            window.localStorage['userAuthToken'] = userAuthToken;
 
-                        // Is user premium ?
-    //                    that.hasFullTracks = (ret.user.credential.parameters.lossy_streaming === true) ;
-    //                    window.localStorage['hasFullTracks'] = that.hasFullTracks;
+                            // Is user premium ?
+                            //                    that.hasFullTracks = (ret.user.credential.parameters.lossy_streaming === true) ;
+                            //                    window.localStorage['hasFullTracks'] = that.hasFullTracks;
 
-                        // Is user hifi ?
-                        if (ret.user.credential.parameters.lossless_streaming) {
-    //                        that.formatId = 6;
-    //                        window.localStorage['formatId'] = 6;
-                            console.log('Lossless')
-                            callback();
+                            // Is user hifi ?
+                            if (ret.user.credential.parameters.lossless_streaming) {
+                                //                        that.formatId = 6;
+//                                window.localStorage['formatId'] = 6;
+//                                console.log('Lossless')
+                                callback();
+                            }
+                        } else {
+                            userAuthToken = false;
+                            console.log('fail   ')
+                            //                    that.hasFullTracks = false;
+                            //                    that.formatId = 5;
+                            //                    window.localStorage['userAuthToken'] = false;
+                            //                    window.localStorage['hasFullTracks'] = false;
+                            //                    window.localStorage['formatId'] = 5;
                         }
-                    } else {
-                        userAuthToken = false;
-                        console.log('fail   ')
-    //                    that.hasFullTracks = false;
-    //                    that.formatId = 5;
-    //                    window.localStorage['userAuthToken'] = false;
-    //                    window.localStorage['hasFullTracks'] = false;
-    //                    window.localStorage['formatId'] = 5;
-                    }
-                }).fail(function(err){
-                    console.log(err);
-                });
+                    }).fail(function(err){
+                        errCallback(err);
+                    });
+            }
+
         }
 
 
@@ -172,15 +180,32 @@ define(function (require) {
 
             this.on('login', function(ev, data){
                 auth(data.user, data.password, function(){
-                    hitch.trigger('playTrack', {track_id: '10797286'});
+                    hitch.trigger('loginComplete');
+//                    hitch.trigger('playTrack', {track_id: '11412223'});
+//                    window.alert('new')
+                    hitch.trigger('search', {query: 'thriller', type: 'tracks'});
+                }, function(err){
+                    hitch.trigger('loginFailed', {err: err});
                 });
+            });
+
+            this.on('search', function(ev, data){
+                oboe(search(data.query, data.type))
+                    .node(data.type + '.items.*', function(track){
+                        hitch.trigger('item', track);
+                    })
+                    .done(function(ret){
+                        console.log(ret);
+                    }).fail(function(err){
+                        throw(err.thrown);
+                    });
+
             });
 
 
             this.on('playTrack', function(ev, data){
                 getStreamUrl(data.track_id, function(url){
                     hitch.trigger('playTrackFromUrl', {url: url});
-//                    hitch.trigger('playTrackFromUrl', {url: 'http://localhost/reference/test.flac'});
                 });
             });
         });

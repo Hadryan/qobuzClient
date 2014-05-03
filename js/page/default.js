@@ -9,6 +9,7 @@ define(function (require) {
   var player = require('component/service/auroraPlayer');
   var service = require('component/service/qobuz');
   var login = require('component/visual/login');
+  var list = require('component/visual/list');
   /**
    * Module exports
    */
@@ -21,15 +22,8 @@ define(function (require) {
 
   function initialize() {
       service.attachTo(document);
-      loginPage();
-  }
-
-  function loginPage(){
-      login.attachTo('#loginForm');
-  }
-
-  function mainPage() {
+      login.attachTo('#loginFormModal');
       player.attachTo(document);
+      list.attachTo('#main');
   }
-
 });
