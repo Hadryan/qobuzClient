@@ -4,6 +4,7 @@
     <title>Qobuz</title>
     <link rel="stylesheet" href="non_bower_components/pure-min.css">
     <link rel="stylesheet" href="css/side-menu.css">
+    <link rel="stylesheet" href="non_bower_components/modal.css">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="description" content="">
@@ -51,16 +52,7 @@
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
 
-            <script>
-                var _sampleRate = (function() {
-                    var AudioContext = (window.AudioContext || window.webkitAudioContext);
-                    if (!AudioContext)
-                        return 44100;
 
-                    return new AudioContext().sampleRate;
-                }());
-
-            </script>
 
             <h2 class="content-subhead">Try Resizing your Browser</h2>
             <p>
@@ -70,11 +62,55 @@
     </div>
 </div>
 
+<div id="loginFormModal" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: block;">
+    <div class="modal-header">
+        <h1>Login to Qobuz</h1>
+    </div>
+
+    <div class="modal-body">
+        <div style="text-align: center;">
+            <form id="loginForm" class="pure-form pure-form-aligned">
+                <fieldset>
+                    <div class="pure-control-group">
+                        <label for="username">Username</label>
+                        <input autocorrect="off" autocapitalize="off" id="username" type="text" placeholder="Username">
+                    </div>
+
+                    <div class="pure-control-group">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" placeholder="Password">
+                    </div>
+                </fieldset>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="pure-button pure-button-primary" type="submit">Submit</button>
+        <p id="loginError" style="color: red;"></p>
+    </div>
+
+    </form>
+</div>
 
 
-<script src="/non_bower_components/aurora.js"></script>
-<script src="/non_bower_components/flac.js"></script>
-<script src="/non_bower_components/md5.js"></script>
+
+
+
+<script>
+    var _sampleRate = (function() {
+        var AudioContext = (window.AudioContext || window.webkitAudioContext);
+        if (!AudioContext)
+            return 44100;
+
+        return new AudioContext().sampleRate;
+    }());
+
+</script>
+
+
+<script src="/client/non_bower_components/aurora.js"></script>
+<script src="/client/non_bower_components/flac.js"></script>
+<script src="/client/non_bower_components/md5.js"></script>
 
 <script src="/bower_components/oboe/dist/oboe-browser.js"></script>
 
@@ -82,6 +118,9 @@
 <script src="/bower_components/es5-shim/es5-shim.js"></script>
 <script src="/bower_components/es5-shim/es5-sham.js"></script>
 <![endif]-->
+
+
+<script src="/bower_components/hogan/web/builds/2.0.0/hogan-2.0.0.js"></script>
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/requirejs/require.js" data-main="js/main.js"></script>
 
