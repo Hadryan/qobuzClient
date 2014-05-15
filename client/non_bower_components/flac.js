@@ -209,8 +209,10 @@ var FLACDecoder = AV.Decoder.extend(function() {
             return;
                             
         // frame sync code
-        if ((stream.read(15) & 0x7FFF) !== 0x7FFC)
+        if ((stream.read(15) & 0x7FFF) !== 0x7FFC){
             throw new Error('Invalid sync code');
+        }
+
             
         var isVarSize = stream.read(1),  // variable block size stream code
             bsCode = stream.read(4),  // block size

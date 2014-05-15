@@ -108,7 +108,7 @@ define(function (require) {
                     if (ret.status && ret.status == "error") {
                         console.log("error");
                     } else {
-                        callback("/proxy.php?url=" + encodeURIComponent(unescape(ret.url)));
+                        callback(ret.url);
                     }
                 }).fail(function(err){
                     console.log(err);
@@ -198,7 +198,8 @@ define(function (require) {
                         console.log(ret);
                     }).fail(function(err){
                         throw(err.thrown);
-                    });
+                    }
+                );
 
             });
 

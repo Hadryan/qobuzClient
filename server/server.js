@@ -2,6 +2,9 @@
 //  OpenShift sample Node application
 var express = require('express');
 var fs      = require('fs');
+var WebSocketServer = require('ws').Server
+    , http = require('http');
+var request = require('request');
 
 
 /**
@@ -123,10 +126,107 @@ var SampleApp = function() {
      */
     self.start = function() {
         //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
+        var server = http.createServer(self.app);
+
+        server.listen(self.port, self.ipaddress, function() {
             console.log('%s: Node server started on %s:%d ...',
                         Date(Date.now() ), self.ipaddress, self.port);
         });
+        var wss = new WebSocketServer({server: server});
+
+
+            var Throttle, audioFolder, fs, path, port, theRequest;
+
+            Throttle = require('throttle');
+
+            wss.on('connection', function(ws) {
+                var audioPath, audioStream, createFileStream, playing;
+                var res = null;
+                audioPath = '';
+                playing = false;
+                console.log('connected');
+                ws.on('close', function() {
+                    return audioStream != null ? audioStream.removeAllListeners() : void 0;
+                });
+                ws.on('message', function(msg) {
+                    msg = JSON.parse(msg);
+                    console.log(msg)
+                    if (msg.fileName != null) {
+                        audioPath = msg.fileName;
+//                        console.log(audioPath);
+//                        request({url: audioPath, method: 'head'}, function(err, res, body) {
+//                            if (err) {
+//                                console.log(err);
+//                                return ws.send(JSON.stringify({
+//                                    error: 'Could not retrieve file.'
+//                                }));
+//                            } else {
+
+
+                               createFileStream();
+
+
+                    } else if (msg.resume) {
+                        if (res != null) {
+                            res.resume();
+                        }
+                        playing = true;
+                    } else if (msg.pause) {
+                        if (res != null) {
+                            res.pause();
+                        }
+                        playing = false;
+                    } else if (msg.reset) {
+                        if (res != null) {
+                            res.removeAllListeners();
+                        }
+                        playing = false;
+                        createFileStream();
+                    } else if (msg.end){
+
+                        theRequest.abort();
+                        res.removeAllListeners();
+                        ws.close();
+                        console.log('disconenct')
+                    }
+                });
+                createFileStream = function() {
+                    theRequest = request(audioPath).on('response', function(resp){
+                        res = resp.pipe(new Throttle(700 * 1024));
+                        console.log(res.headers);
+
+                        ws.send(JSON.stringify({
+                            fileSize: resp.headers['content-length']
+                        }));
+                        res.on('data', function(data) {
+                            console.log(data)
+//                        console.log(data.toString())
+                            return ws.send(data, {
+                                binary: true
+                            });
+                        });
+                        res.on('end', function() {
+                            return ws.send(JSON.stringify({
+                                end: true
+                            }));
+                        });
+
+
+                        playing = true;
+
+                        if (!playing) {
+                            res.pause();
+                        }
+                    });
+//                    audioStream = theRequest.pipe(new Throttle(700 * 1024));
+
+
+                };
+            });
+
+            console.log("Serving WebSocket for Aurora.js on port " + port);
+
+
     };
 
 };   /*  Sample Application.  */

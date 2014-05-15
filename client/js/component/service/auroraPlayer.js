@@ -36,13 +36,15 @@ define(function (require) {
     this.playTrack = function(ev, data){
         var url = data.url;
         if (player) player.stop();
-        player = AV.Player.fromURL(url);
+//        player = AV.Player.fromURL(url);
+        player = AV.Player.fromWebSocket('ws://localhost:8080', url)
         player.play();
 
         player.on('error', function(e) { throw e; });
 
         player.on('buffer', function(percent) {
-            console.log("bufferProgress " +  percent);
+            $('.pure-menu-heading')[0].innerHTML = percent
+//            console.log("bufferProgress " +  percent);
 //            window.alert('percent')
         });
 
