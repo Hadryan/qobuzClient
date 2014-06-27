@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 RUN npm install -g bower
 
 RUN cd client
-RUN bower install
+RUN bower install --allow-root
 RUN cd ..
 
 
