@@ -1,4 +1,4 @@
-define(function (require) {
+define(function(require) {
 
     'use strict';
 
@@ -23,7 +23,7 @@ define(function (require) {
 
         });
 
-        this.submit = function(ev){
+        this.submit = function(ev) {
             ev.preventDefault();
             this.$node.find('button[type="submit"]')[0].disabled = true;
             this.trigger(document, 'login', {
@@ -32,20 +32,20 @@ define(function (require) {
             });
         };
 
-        this.afterLogin = function(){
+        this.afterLogin = function() {
             this.$node.find('button[type="submit"]')[0].disabled = false;
         };
 
-        this.loginFailed = function(ev, data){
+        this.loginFailed = function(ev, data) {
             this.$node.find('#loginError')[0].innerHTML = data.err.jsonBody.message;
         };
 
-        this.loginComplete = function(){
+        this.loginComplete = function() {
             this.$node.removeClass('in');
             this.$node.addClass('out');
         };
 
-        this.after('initialize', function () {
+        this.after('initialize', function() {
             this.on('submit', this.submit);
             this.on(document, 'loginComplete', this.afterLogin);
             this.on(document, 'loginFailed', this.afterLogin);

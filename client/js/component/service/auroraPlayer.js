@@ -35,9 +35,12 @@ define(function(require) {
 
         this.playTrack = function(ev, data) {
             var url = data.url;
-            if (player) player.stop();
+            if (player) {
+                console.log('stopPlayer')
+                player.stop();
+            }
             //        player = AV.Player.fromURL(url);
-            player = AV.Player.fromWebSocket('ws://' + location.hostname + ':' + location.port, url)
+            player = AV.Player.fromWebSocket(url)
             player.play();
 
             player.on('error', function(e) {

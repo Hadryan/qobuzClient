@@ -24,9 +24,10 @@
   },
   "dependencies": {
     "express": "~3.4.4",
-    "ws": "^0.4.31",
     "request": "^2.34.0",
-    "throttle": "^1.0.3"
+    "socket.io": "^1.0.6",
+    "throttle": "^1.0.3",
+    "ws": "^0.4.31"
   },
   "devDependencies": {},
   "bundleDependencies": [],
